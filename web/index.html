@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIDAS 3.0 — Chạm vào đâu, vàng ở đó</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{
+  --ink:#0b0a08; --panel:#141210; --panel-2:#1b1815; --line:#2a251f;
+  --gold:#d4af37; --gold-dim:#8a7326; --gold-hi:#f3d97a;
+  --text:#e8e2d5; --muted:#8f8674; --buy:#4ade80; --wait:#facc15;
+  --hold:#60a5fa; --watch:#a78bfa; --out:#6b7280; --danger:#f87171;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--text);font-family:'Be Vietnam Pro',sans-serif;font-weight:300;min-height:100vh;
+  background-image:radial-gradient(1200px 500px at 80% -10%, rgba(212,175,55,.07), transparent 60%),
+                   radial-gradient(800px 400px at 0% 110%, rgba(212,175,55,.04), transparent 60%)}
+header{display:flex;align-items:baseline;gap:1.4rem;padding:1.6rem 2.4rem 1.1rem;border-bottom:1px solid var(--line)}
+.wordmark{font-family:'Cormorant Garamond',serif;font-size:2.3rem;font-weight:700;letter-spacing:.35em;
+  background:linear-gradient(120deg,var(--gold-hi),var(--gold) 45%,var(--gold-dim));-webkit-background-clip:text;background-clip:text;color:transparent}
+.wordmark small{font-size:.9rem;letter-spacing:.2em;color:var(--muted);-webkit-text-fill-color:var(--muted)}
+.tagline{color:var(--muted);font-size:.8rem;letter-spacing:.06em}
+.spacer{flex:1}
+.badge{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.25rem .6rem;border:1px solid var(--gold-dim);
+  border-radius:2px;color:var(--gold);letter-spacing:.1em}
+button.scan{font-family:'Be Vietnam Pro',sans-serif;font-weight:500;background:linear-gradient(120deg,var(--gold),var(--gold-dim));
+  color:#141210;border:none;padding:.6rem 1.5rem;border-radius:2px;cursor:pointer;letter-spacing:.08em;font-size:.8rem;
+  transition:transform .15s, box-shadow .2s}
+button.scan:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(212,175,55,.25)}
+button.scan:active{transform:translateY(0)}
+button.scan:disabled{opacity:.5;cursor:wait}
+main{display:grid;grid-template-columns:340px 1fr;gap:0;min-height:calc(100vh - 78px)}
+/* ---- cột trái: khuyến nghị ---- */
+aside{border-right:1px solid var(--line);padding:1.2rem;overflow-y:auto;max-height:calc(100vh - 78px)}
+.sec-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.22em;margin:.4rem 0 .9rem}
+.rec{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--out);padding:.85rem 1rem;
+  margin-bottom:.6rem;cursor:pointer;transition:background .15s,border-color .15s;border-radius:2px}
+.rec:hover{background:var(--panel-2);border-color:var(--gold-dim)}
+.rec.active{background:var(--panel-2);border-left-color:var(--gold)}
+.rec .row1{display:flex;align-items:center;gap:.6rem}
+.rec .sym{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:1.05rem;letter-spacing:.05em}
+.rec .price{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted)}
+.chip{font-size:.62rem;font-weight:600;letter-spacing:.1em;padding:.14rem .5rem;border-radius:2px;color:#0b0a08}
+.chip.MUA{background:var(--buy)} .chip.CHỜ{background:var(--wait)}
+.chip.TÍCH{background:var(--hold)} .chip.THEO{background:var(--watch);color:#fff}
+.chip.ĐỨNG{background:var(--out);color:#fff}
+.vcpbadge{font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:.1rem .4rem;border-radius:2px;
+  border:1px solid var(--line);color:var(--muted)}
+.vcpbadge.hot{border-color:var(--gold);color:var(--gold-hi);background:rgba(212,175,55,.08)}
+.filter-btn{width:100%;margin:.2rem 0 .8rem;background:none;border:1px solid var(--line);color:var(--muted);
+  padding:.45rem;border-radius:2px;cursor:pointer;font-size:.68rem;letter-spacing:.12em;font-family:'JetBrains Mono',monospace;
+  transition:all .15s}
+.filter-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
+.filter-btn.on{border-color:var(--gold);color:var(--gold-hi);background:rgba(212,175,55,.1)}
+.conv{height:3px;background:var(--line);margin-top:.6rem;border-radius:2px;overflow:hidden}
+.conv i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold))}
+.wl-form{display:flex;gap:.5rem;margin-top:1.2rem}
+.wl-form input{flex:1;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:.5rem .7rem;
+  font-family:'JetBrains Mono',monospace;border-radius:2px;font-size:.85rem;text-transform:uppercase}
+.wl-form input:focus{outline:none;border-color:var(--gold-dim)}
+.wl-form button{background:none;border:1px solid var(--gold-dim);color:var(--gold);padding:.5rem .9rem;cursor:pointer;border-radius:2px}
+.wl-form button:hover{background:rgba(212,175,55,.1)}
+/* ---- panel chính ---- */
+.detail{padding:1.6rem 2.2rem;overflow-y:auto;max-height:calc(100vh - 78px)}
+.d-head{display:flex;align-items:baseline;gap:1.2rem;margin-bottom:1.2rem}
+.d-head h1{font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:600;line-height:1}
+.d-head .action-big{font-size:1rem;font-weight:600;letter-spacing:.14em}
+.d-head .del{margin-left:auto;color:var(--muted);background:none;border:none;cursor:pointer;font-size:.75rem}
+.d-head .del:hover{color:var(--danger)}
+#chart{height:380px;border:1px solid var(--line);border-radius:2px;background:var(--panel);margin-bottom:1.4rem;position:relative}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.4rem}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:1.2rem 1.4rem}
+.card h3{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:600;color:var(--gold);margin-bottom:.9rem}
+.kv{display:flex;justify-content:space-between;padding:.42rem 0;border-bottom:1px dashed var(--line);font-size:.85rem}
+.kv b{font-family:'JetBrains Mono',monospace;font-weight:600}
+.bar-row{display:grid;grid-template-columns:110px 1fr 60px;align-items:center;gap:.7rem;margin-bottom:.55rem;font-size:.8rem}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px}
+.pass i{background:linear-gradient(90deg,#2f855a,var(--buy))}
+.fail i{background:linear-gradient(90deg,#7f1d1d,var(--danger))}
+.bar-val{font-family:'JetBrains Mono',monospace;text-align:right;font-size:.75rem}
+.tt-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .9rem;font-size:.78rem}
+.tt-item{display:flex;gap:.5rem;align-items:center;padding:.3rem 0}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot.ok{background:var(--buy);box-shadow:0 0 8px rgba(74,222,128,.5)}
+.dot.no{background:var(--danger)}
+.reasons{background:linear-gradient(160deg,var(--panel-2),var(--panel));border:1px solid var(--gold-dim);
+  border-radius:2px;padding:1.2rem 1.4rem;margin-bottom:1.4rem}
+.reasons h3{font-family:'Cormorant Garamond',serif;color:var(--gold-hi);font-size:1.45rem;margin-bottom:.8rem}
+.reasons li{margin-left:1.1rem;padding:.28rem 0;font-size:.88rem;line-height:1.55}
+.meaning{font-size:.85rem;line-height:1.65;color:var(--text)}
+.meaning .src{color:var(--muted);font-size:.72rem;margin-top:.6rem;font-family:'JetBrains Mono',monospace}
+.disclaimer{color:var(--muted);font-size:.7rem;padding:1rem 0 2rem;text-align:center;letter-spacing:.04em}
+.loading{display:flex;align-items:center;justify-content:center;height:60vh;color:var(--muted);
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.2em;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.empty{color:var(--muted);text-align:center;padding:3rem 1rem;font-size:.85rem}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+@media(max-width:960px){main{grid-template-columns:1fr}aside{max-height:none;border-right:none;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wordmark">MIDAS <small>3.0</small></div>
+  <div class="tagline">4M · Phil Town &nbsp;×&nbsp; VCP · Mark Minervini — HOSE/HNX</div>
+  <div class="spacer"></div>
+  <span class="badge" id="mode-badge">…</span>
+  <button class="scan" id="btn-scan" onclick="runScan()">QUÉT WATCHLIST</button>
+</header>
+<main>
+  <aside>
+    <div class="sec-label">KHUYẾN NGHỊ — XẾP THEO ƯU TIÊN</div>
+    <button class="filter-btn" id="btn-filter" onclick="toggleFilter()">◇ LỌC VCP TIỀM NĂNG ≥ 60</button>
+    <div id="rec-list"><div class="empty">Bấm «Quét watchlist» để bắt đầu</div></div>
+    <div class="sec-label" style="margin-top:1.6rem">THÊM MÃ</div>
+    <form class="wl-form" onsubmit="addSymbol(event)">
+      <input id="new-sym" placeholder="VD: VNM" maxlength="10" required>
+      <button type="submit">+</button>
+    </form>
+    <div class="sec-label" style="margin-top:1.6rem">LỌC TUẦN TỰ ĐỘNG</div>
+    <button class="filter-btn" id="btn-rebuild" onclick="runRebuild()">◆ LỌC VN100 → TOP 12</button>
+    <div id="rebuild-status" style="font-size:.72rem;color:var(--muted);padding:.4rem .2rem;line-height:1.5"></div>
+  </aside>
+  <section class="detail" id="detail">
+    <div class="loading">MIDAS ĐANG KHỞI ĐỘNG…</div>
+  </section>
+</main>
+<script>
+const $ = (s)=>document.querySelector(s);
+let CURRENT=null, CHART=null, RECS=[];
+const fmt=(n)=>Number(n).toLocaleString('vi-VN',{maximumFractionDigits:0});
+const ORDER={'MUA':0,'CHỜ PIVOT':1,'TÍCH LŨY DÀI HẠN':2,'THEO DÕI':3,'ĐỨNG NGOÀI':4};
+
+async function api(path,opt){
+  let r;
+  try{r=await fetch('/api/v1'+path,opt)}
+  catch(e){throw new Error('Không kết nối được server Midas. Hãy chắc chắn start_midas.bat đang chạy và bạn mở trang qua http://127.0.0.1:8386')}
+  if(!r.ok){let d;try{d=(await r.json()).detail}catch(_){d='HTTP '+r.status}throw new Error(d)}
+  return r.json();
+}
+
+async function init(){
+  if(location.protocol==='file:'){
+    $('#detail').innerHTML='<div class="empty">⚠️ Bạn đang mở file HTML trực tiếp.<br>Hãy chạy <b>start_midas.bat</b> rồi mở <b>http://127.0.0.1:8386</b> trong trình duyệt.</div>';
+    $('#mode-badge').textContent='CHƯA KẾT NỐI';return;
+  }
+  // Server có thể chưa kịp khởi động khi trình duyệt mở — thử lại 6 lần
+  for(let attempt=1;attempt<=6;attempt++){
+    try{
+      const h=await api('/health');
+      $('#mode-badge').textContent=h.demo_mode?'DEMO MODE':'LIVE · vnstock';
+      $('#detail').innerHTML='<div class="empty">Chọn một mã ở cột trái, hoặc quét toàn bộ watchlist.<br><br>Watchlist hiện có '+h.watchlist_size+' mã.</div>';
+      return;
+    }catch(e){
+      $('#mode-badge').textContent='ĐANG KẾT NỐI…';
+      if(attempt===6){
+        $('#mode-badge').textContent='LỖI';
+        $('#detail').innerHTML='<div class="empty">'+e.message+'</div>';
+      }else{await new Promise(r=>setTimeout(r,1500))}
+    }
+  }
+}
+
+function sortRecs(){RECS.sort((a,b)=>(ORDER[a.action]??9)-(ORDER[b.action]??9)||b.conviction-a.conviction)}
+
+async function runScan(){
+  const btn=$('#btn-scan');btn.disabled=true;
+  try{
+    const wl=(await api('/watchlist')).watchlist;
+    if(!wl.length){$('#rec-list').innerHTML='<div class="empty">Watchlist trống — thêm mã bên dưới.</div>';return}
+    RECS=[];const failed=[];
+    if(RECS.length===0)$('#rec-list').innerHTML='';
+    for(let i=0;i<wl.length;i++){
+      btn.textContent=`QUÉT ${i+1}/${wl.length} · ${wl[i]}`;
+      try{
+        RECS.push(await api('/analysis/'+wl[i]));
+        sortRecs();renderList();
+      }catch(e){failed.push([wl[i],e.message]);console.warn(wl[i],e.message)}
+    }
+    if(failed.length){
+      const diag=failed.length===wl.length?await diagnoseHint():'';
+      const details=failed.slice(0,3).map(([s,m])=>'<br>· <b>'+s+'</b>: '+String(m).slice(0,220)).join('');
+      $('#rec-list').insertAdjacentHTML('beforeend',
+        '<div class="empty" style="padding:1rem;text-align:left">⚠️ Lỗi '+failed.length+' mã.'
+        +' Chi tiết lỗi đầu tiên:'+details
+        +(failed.length>3?'<br>· … và '+(failed.length-3)+' mã khác (lỗi tương tự)':'')
+        +'<br><br>Mở <a href="/api/v1/diagnose" target="_blank" style="color:var(--gold)">/api/v1/diagnose</a> để xem chẩn đoán đầy đủ.'+diag+'</div>');
+    }
+    if(RECS.length)showDetail(RECS[0].symbol);
+  }catch(e){
+    $('#rec-list').innerHTML='<div class="empty">'+e.message+'</div>';
+  }finally{
+    btn.disabled=false;btn.textContent='QUÉT WATCHLIST';
+  }
+}
+
+async function runRebuild(){
+  const btn=$('#btn-rebuild'),st=$('#rebuild-status');
+  if(!confirm('Lọc tuần sẽ quét VN100 (~10-15 phút) và THAY HOÀN TOÀN watchlist bằng TOP 12 mã điểm cao nhất (60% 4M + 40% VCP).\n\nTiếp tục?'))return;
+  btn.disabled=true;
+  try{
+    await api('/watchlist/rebuild',{method:'POST'});
+    st.textContent='Đang khởi động bộ lọc…';
+    const timer=setInterval(async()=>{
+      try{
+        const s=await api('/watchlist/rebuild/status');
+        if(s.running){
+          st.textContent=s.stage+' — '+s.done+'/'+s.total;
+        }else{
+          clearInterval(timer);btn.disabled=false;
+          if(s.error){st.textContent='Lỗi: '+s.error}
+          else if(!(s.selected||[]).length){
+            st.innerHTML='⚠️ Lọc xong nhưng KHÔNG chọn được mã nào — thường do lỗi tải dữ liệu hàng loạt.'
+              +(s.report_path?'<br>Báo cáo: data/'+String(s.report_path).split(/[\\/]/).pop():'')
+              +'<br>Mở <a href="/api/v1/diagnose" target="_blank" style="color:var(--gold)">/api/v1/diagnose</a> để xem nguyên nhân.';
+          }
+          else{
+            st.innerHTML='✔ Xong. Watchlist mới: <b>'+(s.selected||[]).join(', ')+'</b><br>Báo cáo: data/'+((s.report_path||'').split(/[\\/]/).pop());
+            runScan();
+          }
+        }
+      }catch(e){clearInterval(timer);btn.disabled=false;st.textContent='Mất kết nối: '+e.message}
+    },3000);
+  }catch(e){btn.disabled=false;st.textContent=e.message}
+}
+
+async function diagnoseHint(){
+  try{
+    const d=await api('/diagnose');
+    const bad=Object.entries(d.modules).filter(([_,v])=>!v.ok).map(([k,v])=>k+' (cần cho: '+v.required_for+')');
+    let msg='';
+    if(bad.length)msg+='<br><br>Thiếu thư viện: <b>'+bad.join(', ')+'</b><br>→ Chạy lại start_midas.bat hoặc: .venv\\Scripts\\pip install -r requirements.txt';
+    if(d.live_data_test&&d.live_data_test.ok===false)msg+='<br><br>Kết nối dữ liệu: '+d.live_data_test.detail+'<br>→ Kiểm tra internet, hoặc bật demo: đặt MIDAS_DEMO=1 trong .env';
+    return msg;
+  }catch(_){return ''}
+}
+
+let FILTER_VCP=false;
+function toggleFilter(){
+  FILTER_VCP=!FILTER_VCP;
+  $('#btn-filter').classList.toggle('on',FILTER_VCP);
+  renderList();
+}
+function visibleRecs(){
+  if(!FILTER_VCP)return RECS;
+  return [...RECS].filter(r=>(r.vcp.potential_score||0)>=60)
+    .sort((a,b)=>(b.vcp.potential_score||0)-(a.vcp.potential_score||0));
+}
+function renderList(){
+  const list=visibleRecs();
+  if(!list.length){
+    $('#rec-list').innerHTML='<div class="empty">'+(FILTER_VCP?'Chưa có mã nào đạt ≥60 điểm VCP tiềm năng':'Chưa có kết quả')+'</div>';
+    return;
+  }
+  $('#rec-list').innerHTML=list.map(r=>{
+    const p=r.vcp.potential_score||0;
+    return `
+    <div class="rec ${CURRENT===r.symbol?'active':''}" onclick="showDetail('${r.symbol}')">
+      <div class="row1">
+        <span class="sym">${r.symbol}</span>
+        <span class="chip ${r.action.split(' ')[0]}">${r.action}</span>
+        <span class="vcpbadge ${p>=60?'hot':''}">VCP ${p}</span>
+        <span class="price">${fmt(r.four_m.current_price)}</span>
+      </div>
+      <div class="conv"><i style="width:${r.conviction}%"></i></div>
+    </div>`}).join('');
+}
+
+async function showDetail(sym){
+  CURRENT=sym;renderList();
+  let r=RECS.find(x=>x.symbol===sym);
+  $('#detail').innerHTML='<div class="loading">ĐANG PHÂN TÍCH '+sym+'…</div>';
+  try{
+    if(!r){r=await api('/analysis/'+sym);RECS.push(r);}
+    const chart=await api('/chart/'+sym);
+    renderDetail(r,chart.candles);
+  }catch(e){$('#detail').innerHTML='<div class="empty">Lỗi: '+e.message+'</div>'}
+}
+
+function renderDetail(r,candles){
+  const m=r.four_m,v=r.vcp,me=r.meaning;
+  const bf=[['ROIC bq',m.big_five.roic_avg],['Doanh thu',m.big_five.revenue_growth],
+            ['EPS',m.big_five.eps_growth],['BVPS',m.big_five.bvps_growth],['FCF',m.big_five.fcf_growth]];
+  const ttNames={gia_tren_ma150_ma200:'Giá > MA150 & MA200',ma150_tren_ma200:'MA150 > MA200',
+    ma200_doc_len:'MA200 dốc lên 1 tháng',ma50_tren_ma150_ma200:'MA50 > MA150 > MA200',
+    gia_tren_ma50:'Giá > MA50',cao_hon_day52w_30pct:'Cao hơn đáy 52w ≥30%',
+    trong_25pct_dinh52w:'Cách đỉnh 52w ≤25%',rs_rating_70:'RS Rating ≥ 70 ('+v.trend.rs_rating+')'};
+  $('#detail').innerHTML=`
+    <div class="d-head">
+      <h1>${r.symbol}</h1>
+      <span class="chip ${r.action.split(' ')[0]} action-big">${r.action}</span>
+      <span style="font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:.8rem">conviction ${r.conviction}/100 · ${r.generated_at}</span>
+      <button class="del" onclick="removeSymbol('${r.symbol}')">✕ bỏ khỏi watchlist</button>
+    </div>
+    <div id="chart"></div>
+    <div class="reasons"><h3>Luận điểm</h3><ul>${r.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="grid2">
+      <div class="card"><h3>4M — Phil Town</h3>
+        ${bf.map(([n,val])=>`<div class="bar-row"><span>${n}</span>
+          <div class="bar ${val>=10?'pass':'fail'}"><i style="width:${Math.min(Math.max(val,0)/30*100,100)}%"></i></div>
+          <span class="bar-val">${val}%</span></div>`).join('')}
+        <div class="kv"><span>Sticker price</span><b>${fmt(m.sticker_price)}</b></div>
+        <div class="kv"><span>Giá MOS (mua an toàn)</span><b style="color:var(--gold)">${fmt(m.mos_price)}</b></div>
+        <div class="kv"><span>Giá hiện tại</span><b>${fmt(m.current_price)} ${m.on_sale?'· <span style="color:var(--buy)">ON SALE</span>':''}</b></div>
+        <div class="kv"><span>g sử dụng / PE sử dụng</span><b>${m.growth_rate_used}% / ${m.pe_used}</b></div>
+      </div>
+      <div class="card"><h3>VCP — Minervini</h3>
+        <div class="tt-grid">${Object.entries(v.trend.criteria).map(([k,ok])=>
+          `<div class="tt-item"><span class="dot ${ok?'ok':'no'}"></span>${ttNames[k]||k}</div>`).join('')}</div>
+        <div class="kv" style="margin-top:.8rem"><span>Trend Template</span><b>${v.trend.passed_count}/8 ${v.trend.in_stage2?'· Giai đoạn 2':''}</b></div>
+        <div class="kv"><span>Sóng co thắt</span><b>${v.contractions.map(c=>c.depth_pct+'%').join(' → ')||'—'}</b></div>
+        <div class="kv"><span>Pivot / Vùng mua</span><b style="color:var(--gold)">${fmt(v.pivot)} → ${fmt(v.buy_zone[1])}</b></div>
+        <div class="kv"><span>Stop loss</span><b style="color:var(--danger)">${fmt(v.stop_loss)}</b></div>
+        <div class="kv"><span>Volume dry-up</span><b>${v.volume_dry_up?'Có ✓':'Chưa'}</b></div>
+        <div class="kv"><span>Điểm VCP tiềm năng</span><b style="color:${(v.potential_score||0)>=60?'var(--gold-hi)':'inherit'}">${v.potential_score||0}/100</b></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:1.4rem"><h3>Meaning — tin tức ${me.ai_powered?'(Gemini)':'(rule-based)'}</h3>
+      <div class="meaning">${me.summary}
+        <div class="src">sentiment: ${me.sentiment} · meaning score: ${me.meaning_score}/100</div></div></div>
+    <div class="disclaimer">Midas cung cấp thông tin hỗ trợ quyết định dựa trên phương pháp công khai của Phil Town và Mark Minervini.<br>
+    Đây không phải lời khuyên đầu tư. Quyết định và rủi ro thuộc về nhà đầu tư.</div>`;
+  drawChart(candles,v);
+}
+
+function drawChart(candles,v){
+  const el=$('#chart');el.innerHTML='';
+  const c=LightweightCharts.createChart(el,{layout:{background:{color:'transparent'},textColor:'#8f8674',
+    fontFamily:'JetBrains Mono'},grid:{vertLines:{color:'#1b1815'},horzLines:{color:'#1b1815'}},
+    rightPriceScale:{borderColor:'#2a251f'},timeScale:{borderColor:'#2a251f'}});
+  const s=c.addCandlestickSeries({upColor:'#4ade80',downColor:'#f87171',borderVisible:false,
+    wickUpColor:'#4ade80',wickDownColor:'#f87171'});
+  s.setData(candles.map(x=>({time:x.time,open:x.open,high:x.high,low:x.low,close:x.close})));
+  const vol=c.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:'vol',color:'#8a7326'});
+  c.priceScale('vol').applyOptions({scaleMargins:{top:.82,bottom:0}});
+  vol.setData(candles.map(x=>({time:x.time,value:x.volume,color:'rgba(138,115,38,.45)'})));
+  s.createPriceLine({price:v.pivot,color:'#d4af37',lineStyle:2,title:'PIVOT'});
+  s.createPriceLine({price:v.stop_loss,color:'#f87171',lineStyle:2,title:'STOP'});
+  c.timeScale().fitContent();
+  new ResizeObserver(()=>c.applyOptions({width:el.clientWidth,height:el.clientHeight})).observe(el);
+}
+
+async function addSymbol(e){e.preventDefault();
+  const s=$('#new-sym').value.trim().toUpperCase();if(!s)return;
+  await api('/watchlist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symbol:s})});
+  $('#new-sym').value='';showDetail(s);
+}
+async function removeSymbol(s){
+  await api('/watchlist/'+s,{method:'DELETE'});
+  RECS=RECS.filter(r=>r.symbol!==s);CURRENT=null;renderList();
+  $('#detail').innerHTML='<div class="empty">Đã bỏ '+s+' khỏi watchlist.</div>';
+}
+init();
+</script>
+</body>
+</html>
