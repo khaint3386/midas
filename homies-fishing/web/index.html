@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Homies Fishing – cộng đồng cần thủ Việt: chia sẻ hành trình, điểm câu, loài cá, mồi câu và chợ mua bán, trao đổi đồ câu an toàn.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Homies Fishing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: một cột rộng 1120px; dải "mặt nước" xanh sâu ở hero, phần dưới là nền đá cuội sáng; nhấn bằng màu phao câu */
+:root{
+  --bg:#eef2ef;        /* đá cuội sáng, ánh xanh */
+  --surface:#ffffff;
+  --ink:#10292b;       /* nước sâu */
+  --muted:#4d6466;
+  --line:#cfdad6;
+  --deep:#0d3b3d;      /* dải hero */
+  --deep-ink:#e7f1ee;
+  --float:#f29f05;     /* màu phao câu */
+  --float-ink:#1d1300;
+  --ok:#2f7d4f; --warn:#b4561b; --none:#a9b8b4;
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b1a1b;--surface:#122728;--ink:#e3eeeb;--muted:#9bb2ae;--line:#24403f;
+  --deep:#071f20;--deep-ink:#e3eeeb;--float:#f5b032;--float-ink:#1d1300;
+  --ok:#5cc28a;--warn:#e98b4f;--none:#3a5553;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b1a1b;--surface:#122728;--ink:#e3eeeb;--muted:#9bb2ae;--line:#24403f;
+  --deep:#071f20;--deep-ink:#e3eeeb;--float:#f5b032;--float-ink:#1d1300;
+  --ok:#5cc28a;--warn:#e98b4f;--none:#3a5553;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--deep)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--float);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.05;text-wrap:balance;margin:0}
+h2{font-size:clamp(28px,4vw,40px);letter-spacing:.01em}
+h3{font-size:22px;font-weight:600}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.demo{display:inline-block;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border:1px dashed var(--muted);color:var(--muted);padding:2px 8px;border-radius:4px}
+
+/* Header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--deep);color:var(--deep-ink);border-bottom:1px solid rgba(255,255,255,.08)}
+.nav{display:flex;align-items:center;gap:20px;padding-block:12px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-size:24px;font-weight:700;letter-spacing:.02em}
+.logo svg{flex:none}
+.nav ul{display:flex;gap:18px;list-style:none;margin:0 0 0 auto;padding:0;flex-wrap:wrap}
+.nav ul a{text-decoration:none;font-size:14px;opacity:.85}
+.nav ul a:hover{opacity:1;text-decoration:underline;text-underline-offset:4px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 14px var(--f-body);border:0;border-radius:6px;padding:10px 16px;cursor:pointer;text-decoration:none}
+.btn-float{background:var(--float);color:var(--float-ink)}
+.btn-float:hover{filter:brightness(1.06)}
+.btn-ghost{background:transparent;color:inherit;border:1px solid currentColor}
+.menu-btn{display:none;margin-left:auto;background:none;border:1px solid rgba(255,255,255,.3);color:var(--deep-ink);border-radius:6px;padding:6px 10px;font:500 14px var(--f-body)}
+@media (max-width:860px){
+  .nav{flex-wrap:wrap}
+  .menu-btn{display:inline-flex}
+  .nav ul{display:none;width:100%;flex-direction:column;gap:10px;margin:0;padding-block:8px}
+  .nav ul.open{display:flex}
+  .nav .btn-float.hide-sm{display:none}
+}
+
+/* Hero */
+.hero{background:var(--deep);color:var(--deep-ink);position:relative;overflow:hidden}
+.hero .wrap{padding-block:56px 64px;display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(44px,7vw,84px);text-transform:uppercase;letter-spacing:.005em}
+.hero h1 em{font-style:normal;color:var(--float)}
+.hero p.lead{font-size:17px;max-width:52ch;opacity:.9;margin:18px 0 26px}
+.search{display:flex;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px;max-width:520px}
+.search input{flex:1;min-width:0;background:transparent;border:0;color:var(--deep-ink);font:15px var(--f-body);padding:8px 10px}
+.search input::placeholder{color:var(--deep-ink);opacity:.6}
+.search input:focus{outline:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chips a{font-size:13px;text-decoration:none;border:1px solid rgba(255,255,255,.25);padding:4px 10px;border-radius:99px}
+.tackle{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:20px;font-family:var(--f-mono);font-size:13px}
+.tackle .row{display:flex;justify-content:space-between;gap:12px;padding-block:7px;border-bottom:1px dashed rgba(255,255,255,.15)}
+.tackle .row:last-child{border-bottom:0}
+.tackle .k{opacity:.65}
+.tackle h3{font-family:var(--f-display);font-size:20px;margin-bottom:6px}
+canvas.ripple{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.5}
+.hero .wrap{position:relative}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr;padding-block:40px 44px}}
+
+/* Sections */
+section.block{padding-block:56px}
+.head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.head p{margin:6px 0 0;color:var(--muted);max-width:60ch}
+
+/* Season calendar */
+.cal-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table.cal{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
+.cal th,.cal td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--line)}
+.cal th:first-child,.cal td:first-child{text-align:left;padding-left:16px;white-space:nowrap}
+.cal thead th{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-weight:500}
+.cal tr:last-child td{border-bottom:0}
+.dot{display:inline-block;width:18px;height:18px;border-radius:50%}
+.dot.ok{background:var(--ok)} .dot.no{background:transparent;border:2px solid var(--warn)} .dot.na{background:var(--none);width:6px;height:6px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:12px;align-items:center}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.src{font-size:12px;color:var(--muted)}
+.src a{color:var(--muted)}
+
+/* Journeys */
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+@media (max-width:900px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.grid3{grid-template-columns:1fr}}
+.trip{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.trip .pic{aspect-ratio:16/9;max-width:100%;display:block;width:100%}
+.trip .body{padding:16px;display:flex;flex-direction:column;gap:10px;flex:1}
+.trip .meta{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:var(--f-mono);font-size:11px;padding:3px 8px;border-radius:4px;background:var(--bg);border:1px solid var(--line)}
+.trip p{margin:0;color:var(--muted);font-size:14px}
+.trip .by{margin-top:auto;font-size:13px;display:flex;justify-content:space-between;color:var(--muted)}
+
+/* Species */
+.species{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
+@media (max-width:900px){.species{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.species{grid-template-columns:1fr}}
+.sp{padding:20px 20px 20px 0;border-bottom:1px solid var(--line);display:grid;gap:8px;min-width:0}
+.sp .water{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.sp .water.ngot{color:var(--ok)} .sp .water.lo{color:var(--warn)} .sp .water.man{color:var(--muted)}
+.sp dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:14px}
+.sp dt{color:var(--muted)} .sp dd{margin:0}
+
+/* Market */
+.market{background:var(--surface);border-block:1px solid var(--line)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{font:500 14px var(--f-body);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:6px 14px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.listings{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:20px}
+@media (max-width:1000px){.listings{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.listings{grid-template-columns:1fr}}
+.item{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--bg);min-width:0}
+.item .type{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;display:flex;justify-content:space-between}
+.item .type b{font-weight:500}
+.item h3{font-size:19px}
+.item .price{font-family:var(--f-mono);font-size:16px;font-weight:500}
+.cond{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:4px;font:600 12px var(--f-mono);border:1.5px solid currentColor}
+.cond.A{color:var(--ok)} .cond.B{color:var(--float)} .cond.C{color:var(--warn)}
+.seller{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+.trust{color:var(--ok);font-weight:600}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:28px;font-size:14px}
+@media (max-width:760px){.rules{grid-template-columns:1fr}}
+.rules div{display:grid;gap:4px}
+.rules strong{font-family:var(--f-display);font-size:19px;font-weight:600}
+.rules p{margin:0;color:var(--muted)}
+
+/* Contribute */
+.contrib .wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+@media (max-width:860px){.contrib .wrap{grid-template-columns:1fr}}
+ol.steps{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:16px;counter-reset:s}
+ol.steps li{display:grid;grid-template-columns:40px 1fr;gap:12px;counter-increment:s}
+ol.steps li::before{content:counter(s);font-family:var(--f-display);font-size:30px;font-weight:700;color:var(--float);line-height:1}
+ol.steps b{display:block}
+ol.steps span{color:var(--muted);font-size:14px}
+.form{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:12px}
+.form label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.form input,.form select,.form textarea{font:15px var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px;width:100%}
+.form .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.form .two{grid-template-columns:1fr}}
+.form .check{display:flex;gap:8px;align-items:flex-start;color:var(--ink)}
+.form .check input{width:auto;margin-top:4px}
+.toast{font-size:14px;color:var(--ok);min-height:1.4em;margin:0}
+
+/* Footer */
+footer{background:var(--deep);color:var(--deep-ink);font-size:13px}
+footer .wrap{padding-block:32px;display:grid;gap:12px}
+footer p{margin:0;opacity:.8;max-width:80ch}
+@media (prefers-reduced-motion:reduce){canvas.ripple{display:none}}
+</style>
+</head><body>
+
+<header class="top">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Homies Fishing – trang chủ">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><line x1="14" y1="1" x2="14" y2="8" stroke="currentColor" stroke-width="2"/><path d="M6 15a8 8 0 0 1 16 0Z" fill="#f29f05"/><path d="M6 15a8 8 0 0 0 16 0Z" fill="currentColor"/><path d="M2 24c3-2 5-2 8 0s5 2 8 0 5-2 8 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      HOMIES FISHING
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
+    <ul id="menu">
+      <li><a href="#hanh-trinh">Hành trình</a></li>
+      <li><a href="#mua-cau">Điểm câu &amp; mùa</a></li>
+      <li><a href="#loai-ca">Loài cá &amp; mồi</a></li>
+      <li><a href="#cho">Chợ Homies</a></li>
+    </ul>
+    <a class="btn btn-float hide-sm" href="#viet-bai">Kể chuyến câu</a>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <canvas class="ripple" id="ripple" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div>
+      <div class="eyebrow" style="color:var(--deep-ink);opacity:.7">Cộng đồng cần thủ Việt</div>
+      <h1>Kể chuyến câu.<br>Đổi đồ câu.<br><em>Giữ nguồn cá.</em></h1>
+      <p class="lead">Tra cứu điểm câu, loài cá, mồi và mùa vụ do chính anh em cần thủ viết. Mua, bán, đổi đồ câu với người đã được xác minh.</p>
+      <form class="search" id="searchForm" role="search">
+        <input id="q" aria-label="Tìm kiếm" name="q" type="search" placeholder="Tìm điểm câu, loài cá, máy câu cũ…">
+        <button class="btn btn-float" type="submit">Tìm</button>
+      </form>
+      <div class="chips" aria-label="Tìm nhanh">
+        <a href="#mua-cau">Câu mực Phú Quốc</a><a href="#loai-ca">Cá lóc lure</a><a href="#cho">Máy câu 2500 cũ</a><a href="#loai-ca">Mồi câu chép</a>
+      </div>
+      <p class="toast" id="searchMsg" style="color:var(--float)"></p>
+    </div>
+    <aside class="tackle" aria-label="Thẻ chuyến câu mẫu">
+      <span class="demo" style="color:var(--deep-ink);border-color:var(--deep-ink)">Thẻ chuyến câu · ví dụ</span>
+      <h3 style="margin-top:12px">Đêm câu mực, Nam đảo Phú Quốc</h3>
+      <div class="row"><span class="k">Kỹ thuật</span><span>Câu mực mồi giả · câu đáy</span></div>
+      <div class="row"><span class="k">Mồi</span><span>Mồi tôm giả #2.5 · tôm sống</span></div>
+      <div class="row"><span class="k">Bộ đồ</span><span>Cần 2m1 · máy 2500 · PE 0.8</span></div>
+      <div class="row"><span class="k">Khung giờ</span><span>18:00 – 23:00</span></div>
+      <div class="row"><span class="k">Mùa</span><span>Mùa khô T11 – T4</span></div>
+      <div class="row"><span class="k">Vị trí</span><span>Khu vực chung (người viết ẩn điểm)</span></div>
+    </aside>
+  </div>
+</section>
+
+<main>
+  <section class="block" id="mua-cau">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <div class="eyebrow">Bản đồ mùa câu</div>
+          <h2>Tháng nào câu ở đâu?</h2>
+          <p>Lịch khởi tạo chỉ gồm thông tin đã có nguồn. Ô trống là chỗ cần anh em đã đi thực tế bổ sung.</p>
+        </div>
+        <a class="btn btn-ghost" href="#viet-bai">Bổ sung lịch mùa</a>
+      </div>
+      <div class="cal-wrap">
+        <table class="cal" id="cal">
+          <thead><tr><th scope="col">Điểm câu</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="legend">
+        <span><i class="dot ok"></i>Nguồn cho là thuận lợi</span>
+        <span><i class="dot no"></i>Nguồn khuyên tránh (biển động)</span>
+        <span><i class="dot na"></i>Chưa có dữ liệu</span>
+      </div>
+      <p class="src">Nguồn: Phú Quốc – <a href="https://vinwonders.com/vi/wonderpedia/news/review-kinh-nghiem-cau-ca-phu-quoc-chi-tiet-nhat/" target="_blank" rel="noopener">VinWonders</a>; Nha Trang – <a href="https://www.fishingworldguide.com/pl/wietnam" target="_blank" rel="noopener">Fishing World Guide</a> (chưa đối chiếu nguồn trong nước); Cù Lao Chàm – <a href="https://baophapluat.vn/24h-thu-lam-ngu-dan-o-cu-lao-cham-post185059.html" target="_blank" rel="noopener">Báo Pháp luật</a>. Lưu ý: vùng nước Hòn Mun (Nha Trang) là phân khu bảo vệ nghiêm ngặt, không khai thác.</p>
+    </div>
+  </section>
+
+  <section class="block" id="hanh-trinh" style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <div class="eyebrow">Hành trình mới</div>
+          <h2>Anh em vừa đi đâu về</h2>
+        </div>
+        <span class="demo">Bài mẫu minh họa</span>
+      </div>
+      <div class="grid3" id="trips"></div>
+    </div>
+  </section>
+
+  <section class="block" id="loai-ca" style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <div class="eyebrow">Loài cá &amp; mồi</div>
+          <h2>Biết cá, chọn mồi</h2>
+          <p>Mỗi loài có trang riêng: mùa, điểm câu, mồi, kỹ thuật và hành trình liên quan.</p>
+        </div>
+      </div>
+      <div class="species" id="species"></div>
+    </div>
+  </section>
+
+  <section class="block market" id="cho">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <div class="eyebrow">Chợ Homies</div>
+          <h2>Mua, bán, đổi đồ câu</h2>
+          <p>Tình trạng chấm theo chuẩn A · B · C. Người bán có điểm tin cậy từ đánh giá hai chiều.</p>
+        </div>
+        <div class="tabs" role="group" aria-label="Lọc tin">
+          <button type="button" data-f="all" aria-pressed="true">Tất cả</button>
+          <button type="button" data-f="Bán" aria-pressed="false">Bán</button>
+          <button type="button" data-f="Đổi" aria-pressed="false">Đổi</button>
+          <button type="button" data-f="Tìm mua" aria-pressed="false">Tìm mua</button>
+        </div>
+      </div>
+      <span class="demo">Tin đăng minh họa</span>
+      <div class="listings" id="listings"></div>
+      <div class="rules">
+        <div><strong>Xác minh người bán</strong><p>Email, số điện thoại, giấy tờ tùy thân cho người bán nhiều. Huy hiệu hiện ngay trên tin.</p></div>
+        <div><strong>Ảnh thật, mô tả chuẩn</strong><p>Bắt buộc ảnh serial, khoen cần, tay quay. A: như mới · B: có vết dùng, chạy tốt · C: có lỗi đã ghi rõ.</p></div>
+        <div><strong>Hàng cấm</strong><p>Không đăng máy kích điện, chất nổ, hóa chất, ngư cụ tận diệt, hàng giả. Vi phạm bị khóa tài khoản.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block contrib" id="viet-bai">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">100 hành trình đầu tiên</div>
+        <h2>Chuyến câu của bạn là tấm bản đồ cho người sau</h2>
+        <ol class="steps">
+          <li><div><b>Điền thẻ chuyến câu</b><span>Điểm, loài cá, mồi, con nước. Viết trên điện thoại khoảng 15 phút.</span></div></li>
+          <li><div><b>Thêm ảnh và vài dòng kể chuyện</b><span>Không bắt buộc lộ "điểm ruột". Bạn chọn ghi chính xác, khu vực chung hoặc ẩn.</span></div></li>
+          <li><div><b>Nhận huy hiệu Homie Sáng lập và 50 điểm</b><span>Điểm dùng để đẩy tin ở Chợ Homies. Bài hay nhất tuần lên trang chủ.</span></div></li>
+        </ol>
+      </div>
+      <form class="form" id="tripForm" novalidate>
+        <span class="demo">Bản nháp chỉ lưu trên trình duyệt của bạn</span>
+        <label for="t-title">Tiêu đề<input id="t-title" required value="Sáng sớm câu lóc ở hồ Trị An"></label>
+        <div class="two">
+          <label for="t-spot">Điểm câu<input id="t-spot" value="Hồ Trị An, Đồng Nai"></label>
+          <label for="t-fish">Loài cá<input id="t-fish" value="Cá lóc, cá lóc bông"></label>
+        </div>
+        <div class="two">
+          <label for="t-bait">Mồi<input id="t-bait" value="Nhái giả, mồi nổi"></label>
+          <label for="t-loc">Mức chi tiết vị trí
+            <select id="t-loc"><option>Khu vực chung</option><option>Chính xác</option><option>Ẩn</option></select>
+          </label>
+        </div>
+        <label for="t-story">Câu chuyện<textarea id="t-story" rows="3">Ra bến lúc 5 giờ, thuyền chạy dọc rìa cây ngập. Cá ăn mạnh khoảng một tiếng đầu…</textarea></label>
+        <label class="check" for="t-ok"><input type="checkbox" id="t-ok" checked> Tôi không dùng phương pháp bị cấm (kích điện, chất nổ) và đây là trải nghiệm thật.</label>
+        <button class="btn btn-float" type="submit">Gửi duyệt</button>
+        <p class="toast" id="formMsg" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <strong style="font-family:var(--f-display);font-size:20px">HOMIES FISHING</strong>
+    <p>Một số liên kết sản phẩm là liên kết tiếp thị. Khi bạn mua qua đó, Homies có thể nhận hoa hồng từ người bán mà bạn không phải trả thêm.</p>
+    <p>Câu có trách nhiệm: thả cá nhỏ, giữ sạch bờ hồ, tôn trọng khu bảo tồn. Kích điện và chất nổ bị cấm theo Luật Thủy sản 2017.</p>
+    <p>Bản thiết kế mẫu. Hành trình, tin đăng và người dùng trên trang là dữ liệu minh họa.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Lịch mùa: 1 = thuận lợi, -1 = nên tránh, 0 = chưa có dữ liệu
+  var CAL=[
+    ["Phú Quốc · câu biển, mực đêm",[1,1,1,1,0,0,0,0,0,0,1,1]],
+    ["Nha Trang · câu đáy, mực đêm",[0,0,0,1,1,1,1,1,1,0,0,0]],
+    ["Cù Lao Chàm · câu biển",[-1,-1,0,0,0,0,0,0,-1,-1,-1,-1]],
+    ["Hồ Trị An · lure cá lóc",[0,0,0,0,0,0,0,0,0,0,0,0]],
+    ["Cô Tô · bãi đá Móng Rồng",[0,0,0,0,0,0,0,0,0,0,0,0]]
+  ];
+  var thead=document.querySelector("#cal thead tr"), tbody=document.querySelector("#cal tbody");
+  for(var m=1;m<=12;m++){var th=document.createElement("th");th.scope="col";th.textContent="T"+m;thead.appendChild(th);}
+  CAL.forEach(function(r){
+    var tr=document.createElement("tr"), td=document.createElement("td");td.textContent=r[0];tr.appendChild(td);
+    r[1].forEach(function(v,i){var c=document.createElement("td"),d=document.createElement("i");
+      d.className="dot "+(v>0?"ok":v<0?"no":"na");
+      c.title="Tháng "+(i+1)+": "+(v>0?"thuận lợi":v<0?"nên tránh":"chưa có dữ liệu");
+      c.appendChild(d);tr.appendChild(c);});
+    tbody.appendChild(tr);
+  });
+
+  // Hành trình mẫu: ảnh vẽ bằng canvas theo loại nước
+  var TRIPS=[
+    {t:"Đêm câu mực ở Nam đảo",p:"Phú Quốc",tags:["Mực ống","Mồi giả #2.5","T1"],d:"Tàu ra lúc chiều tối, bật đèn khoảng 19 giờ. Mực vào đèn rộ nhất sau khi trăng lặn.",by:"@hoangphao",r:"12 phút đọc",c:["#0a2f4a","#123f63","#f2c14e"]},
+    {t:"Rê nhái ven cỏ mùa nước lên",p:"Quảng Nam",tags:["Cá lóc","Nhái sống","Câu rê"],d:"Gắn mồi sao cho nhái không xoay vòng khi kéo. Cá lóc táp mạnh ở mép cỏ dày.",by:"@lockhoi",r:"8 phút đọc",c:["#21452a","#3c6b3a","#d9e3b0"]},
+    {t:"Một ngày ở hồ dịch vụ Gia Lâm",p:"Hà Nội",tags:["Cá chép","Câu đài","Mồi cám"],d:"So sánh ba công thức mồi trong cùng một buổi. Ghi lại độ sâu phao và giờ cá ăn.",by:"@daithu_hn",r:"10 phút đọc",c:["#2e4b47","#56807a","#e6d9a8"]}
+  ];
+  var tg=document.getElementById("trips");
+  TRIPS.forEach(function(x,i){
+    var a=document.createElement("article");a.className="trip";
+    a.innerHTML='<canvas class="pic" width="640" height="360" aria-hidden="true"></canvas><div class="body"><div class="eyebrow">'+x.p+'</div><h3>'+x.t+'</h3><div class="meta">'+x.tags.map(function(s){return '<span class="tag">'+s+'</span>'}).join("")+'</div><p>'+x.d+'</p><div class="by"><span>'+x.by+'</span><span class="mono">'+x.r+'</span></div></div>';
+    tg.appendChild(a);
+    var cv=a.querySelector("canvas"),g=cv.getContext("2d"),gr=g.createLinearGradient(0,0,0,360);
+    gr.addColorStop(0,x.c[1]);gr.addColorStop(1,x.c[0]);g.fillStyle=gr;g.fillRect(0,0,640,360);
+    g.fillStyle=x.c[2];g.globalAlpha=.9;g.beginPath();g.arc(120+i*170,90,26,0,7);g.fill();
+    g.globalAlpha=.25;g.strokeStyle=x.c[2];g.lineWidth=2;
+    for(var k=0;k<7;k++){g.beginPath();for(var px=0;px<=640;px+=8){var py=180+k*26+Math.sin(px/40+k+i)*5;px?g.lineTo(px,py):g.moveTo(px,py);}g.stroke();}
+    g.globalAlpha=1;
+  });
+
+  // Loài cá
+  var SP=[
+    ["Cá lóc","ngot","Nước ngọt","Mép cỏ, cây ngập, cấu trúc chìm","Nhái sống, nhái giả, mồi nổi","Câu rê, lure"],
+    ["Cá chép","ngot","Nước ngọt","Hồ dịch vụ, hồ tự nhiên, đáy bùn","Mồi cám, ngô, mồi lên men","Câu đài, câu lục"],
+    ["Cá rô phi","ngot","Nước ngọt","Hồ, ao, kênh nước tĩnh","Giun, cám viên, mồi bột","Câu tay, câu đài"],
+    ["Cá chẽm","lo","Nước lợ","Cửa sông, đầm, chân cầu, bờ kè","Tôm sống, cá nhỏ, lure chìm","Câu lure, câu mồi sống"],
+    ["Mực ống","man","Nước mặn","Biển gần bờ, quanh đèn tàu ban đêm","Mồi giả hình tôm","Câu đêm có đèn"],
+    ["Cá mú","man","Nước mặn","Rạn đá, rạn san hô","Cá tươi, tôm, mực cắt","Câu đáy"]
+  ];
+  var sg=document.getElementById("species");
+  SP.forEach(function(s){var d=document.createElement("div");d.className="sp";
+    d.innerHTML='<span class="water '+s[1]+'">'+s[2]+'</span><h3>'+s[0]+'</h3><dl><dt>Ở đâu</dt><dd>'+s[3]+'</dd><dt>Mồi</dt><dd>'+s[4]+'</dd><dt>Kỹ thuật</dt><dd>'+s[5]+'</dd></dl>';
+    sg.appendChild(d);});
+
+  // Chợ
+  var L=[
+    {k:"Bán",n:"Máy câu dọc 2500, bạc đạn mới thay",p:"650.000đ",c:"B",a:"TP.HCM",s:"@tuanlure",tr:"4,9★ · 23 giao dịch"},
+    {k:"Đổi",n:"Cần lure 2m1 ML đổi cần 1m8 UL",p:"Bù 100k nếu cần",c:"A",a:"Đà Nẵng",s:"@chemsonghan",tr:"4,8★ · 9 giao dịch"},
+    {k:"Bán",n:"Hộp mồi giả 24 con, đủ cỡ cho lóc",p:"420.000đ",c:"A",a:"Cần Thơ",s:"@miennuoc",tr:"5,0★ · 41 giao dịch"},
+    {k:"Tìm mua",n:"Cần câu đài 5m4, ngân sách dưới 1 triệu",p:"≤ 1.000.000đ",c:"–",a:"Hà Nội",s:"@daithu_hn",tr:"4,7★ · 5 giao dịch"},
+    {k:"Bán",n:"Máy ngang tay phải, tay quay hơi rơ",p:"380.000đ",c:"C",a:"Biên Hòa",s:"@trian_boat",tr:"4,6★ · 12 giao dịch"},
+    {k:"Đổi",n:"Thùng đá giữ cá 30L đổi ghế câu xếp",p:"Ngang giá",c:"B",a:"Nha Trang",s:"@mucdem",tr:"4,9★ · 17 giao dịch"},
+    {k:"Bán",n:"Cuộn dây PE 0.8, 150m, còn nguyên seal",p:"120.000đ",c:"A",a:"Huế",s:"@songhuong",tr:"4,8★ · 30 giao dịch"},
+    {k:"Tìm mua",n:"Máy câu mực đứng, đã qua sử dụng",p:"Thương lượng",c:"–",a:"Phú Quốc",s:"@namdao",tr:"Mới tham gia"}
+  ];
+  var lg=document.getElementById("listings");
+  function render(f){lg.innerHTML="";L.filter(function(x){return f==="all"||x.k===f}).forEach(function(x){
+    var d=document.createElement("article");d.className="item";
+    d.innerHTML='<div class="type"><b>'+x.k+'</b><span>'+x.a+'</span></div><h3>'+x.n+'</h3><div style="display:flex;justify-content:space-between;align-items:center"><span class="price">'+x.p+'</span>'+(x.c!=="–"?'<span class="cond '+x.c+'" title="Tình trạng '+x.c+'">'+x.c+'</span>':'')+'</div><div class="seller"><span>'+x.s+'</span><span class="trust">'+x.tr+'</span></div>';
+    lg.appendChild(d);});}
+  render("all");
+  var tabs=document.querySelectorAll(".tabs button");
+  tabs.forEach(function(b){b.addEventListener("click",function(){tabs.forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");render(b.dataset.f);});});
+
+  // Menu di động
+  var mb=document.getElementById("menuBtn"),mn=document.getElementById("menu");
+  mb.addEventListener("click",function(){var o=mn.classList.toggle("open");mb.setAttribute("aria-expanded",o);});
+  mn.addEventListener("click",function(e){if(e.target.tagName==="A"){mn.classList.remove("open");mb.setAttribute("aria-expanded","false");}});
+
+  // Tìm kiếm (bản mẫu)
+  document.getElementById("searchForm").addEventListener("submit",function(e){e.preventDefault();
+    var q=document.getElementById("q").value.trim();
+    document.getElementById("searchMsg").textContent=q?'Bản mẫu chưa có dữ liệu thật. Kết quả cho "'+q+'" sẽ gồm điểm câu, loài cá, hành trình và tin chợ.':"Nhập điểm câu, loài cá hoặc tên đồ câu.";});
+
+  // Form bản nháp
+  var KEY="homies-draft",ids=["t-title","t-spot","t-fish","t-bait","t-loc","t-story"];
+  try{var saved=JSON.parse(localStorage.getItem(KEY)||"null");if(saved)ids.forEach(function(id){if(saved[id]!=null)document.getElementById(id).value=saved[id];});}catch(e){}
+  document.getElementById("tripForm").addEventListener("input",function(){try{var o={};ids.forEach(function(id){o[id]=document.getElementById(id).value});localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}});
+  document.getElementById("tripForm").addEventListener("submit",function(e){e.preventDefault();
+    var msg=document.getElementById("formMsg");
+    if(!document.getElementById("t-title").value.trim()){msg.style.color="var(--warn)";msg.textContent="Thêm tiêu đề cho chuyến câu.";return;}
+    if(!document.getElementById("t-ok").checked){msg.style.color="var(--warn)";msg.textContent="Cần đánh dấu cam kết câu có trách nhiệm trước khi gửi.";return;}
+    msg.style.color="var(--ok)";msg.textContent="Đã lưu bản nháp. Bản thật sẽ gửi bài vào hàng chờ duyệt.";});
+
+  // Gợn sóng nhẹ ở hero
+  var cv=document.getElementById("ripple");
+  if(cv&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+    var g=cv.getContext("2d"),t=0,W,H;
+    function size(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;}
+    size();addEventListener("resize",size);
+    (function loop(){g.clearRect(0,0,W,H);g.strokeStyle="rgba(231,241,238,.12)";g.lineWidth=1;
+      for(var k=0;k<5;k++){var r=((t*0.4+k*60)%300);g.beginPath();g.ellipse(W*0.78,H*0.82,r*1.8,r*0.45,0,0,7);g.stroke();}
+      t++;requestAnimationFrame(loop);})();
+  }
+})();
+</script>
+</body></html>
