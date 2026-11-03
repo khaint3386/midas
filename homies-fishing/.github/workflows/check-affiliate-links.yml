@@ -1,0 +1,19 @@
+# Agent Vận hành: kiểm tra link affiliate mỗi sáng thứ Hai (07:00 giờ Việt Nam).
+# Báo đỏ nếu có link chết, GitHub sẽ gửi email cho chủ repo.
+name: Check affiliate links
+on:
+  schedule:
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/check-links.mjs

@@ -3,7 +3,9 @@
 Website cộng đồng câu cá Việt Nam: hành trình, điểm câu, loài cá, mồi, chợ mua bán/đổi đồ câu.
 
 ## Cấu trúc
-- `web/index.html` — trang chủ mẫu (HTML/CSS/JS thuần, chưa có build). `web/assets/` — logo và ảnh.
+- `web/index.html`, `web/do-cau.html` — HTML/JS thuần, chưa có build. CSS chung ở `web/assets/site.css`; ảnh và logo ở `web/assets/`.
+- `web/data/affiliate-links.json` — nguồn duy nhất của link affiliate và bộ đồ. `functions/go/[slug].js` — chuyển hướng `/go/`.
+- `scripts/check-links.mjs` — kiểm link chết.
 - `docs/` — nghiên cứu, kế hoạch nội dung, affiliate, TikTok, vận hành bằng AI agent.
 
 ## Quy ước
@@ -16,10 +18,13 @@ Website cộng đồng câu cá Việt Nam: hành trình, điểm câu, loài c�
 ## Nội dung
 - Mọi khẳng định về mùa câu, quy định, giá phải có nguồn và ngày truy cập. Không bịa số liệu.
 - Không đăng hoặc gợi ý kích điện, chất nổ, câu trong vùng cấm.
-- Link affiliate đi qua `/go/{slug}` với `rel="sponsored nofollow noopener"`.
+- Link affiliate đi qua `/go/{slug}` với `rel="sponsored nofollow noopener"`; link trong nội dung thành viên dùng `rel="ugc"`.
+- Bài review phải có người thật đã dùng sản phẩm, mục "Cách chúng tôi test", dòng công bố affiliate, ngày cập nhật. Không viết "chính hãng" khi chưa xác minh. Không tạo tác giả hay đánh giá giả.
+- Lọc bỏ sản phẩm có từ khóa "kích cá", "kích điện", "xung điện", "máy kích".
 
 ## Kiểm tra trước khi mở PR
-- Mở `web/index.html` ở rộng 390px và 1366px, sáng và tối: không tràn ngang, không lỗi console, không ảnh hỏng.
+- `node scripts/check-links.mjs` khi sửa `affiliate-links.json`.
+- Mở `web/index.html` và `web/do-cau.html` qua máy chủ web ở rộng 390px và 1366px, sáng và tối: không tràn ngang, không lỗi console, không ảnh hỏng.
 
 ## Tiêu chí review
 - Báo lỗi thật: hỏng bố cục trên điện thoại, mất chế độ tối, link chết, thiếu `alt`, chữ không đọc được trên ảnh, số liệu không có nguồn.

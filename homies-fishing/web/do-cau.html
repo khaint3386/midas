@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Bộ đồ câu gợi ý theo từng kiểu hành trình: người mới, lure cá lóc, câu mực đêm, câu đài. Có công bố liên kết tiếp thị.">
+<link rel="icon" href="assets/logo-dark.png">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Đồ câu nên mua · Homies Fishing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Dancing+Script:wght@600&family=Be+Vietnam+Pro:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head><body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="Homies Fishing – trang chủ">
+      <img src="assets/mark-white.png" alt="" width="94" height="26">
+      <span>HOMIES FISHING</span>
+    </a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+    <ul id="menu">
+      <li><a href="index.html#mua-cau">Mùa câu</a></li>
+      <li><a href="index.html#hanh-trinh">Hành trình</a></li>
+      <li><a href="index.html#loai-ca">Loài cá &amp; mồi</a></li>
+      <li><a href="index.html#cho">Chợ Homies</a></li>
+      <li><a href="do-cau.html" aria-current="page">Đồ nên mua</a></li>
+    </ul>
+    <a class="btn btn-boat hide-sm" href="index.html#viet-bai">Kể chuyến câu</a>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--peach)">Đồ nên mua</div>
+    <h1>Bộ đồ theo từng kiểu hành trình</h1>
+    <p>Chọn kiểu câu bạn sắp đi, Homies gợi ý những món cần có. Mua mới trên sàn, hoặc tìm đồ cũ còn tốt ở Chợ Homies.</p>
+  </div>
+</section>
+
+<main>
+  <section class="block" style="padding-top:36px">
+    <div class="wrap">
+      <div class="disclose" role="note">
+        <span aria-hidden="true">ⓘ</span>
+        <p style="margin:0"><b>Liên kết tiếp thị.</b> Khi bạn mua qua nút "Xem trên Shopee", Homies có thể nhận hoa hồng từ người bán mà bạn không phải trả thêm. Danh sách do ban biên tập và thành viên chọn theo trải nghiệm, không nhận tiền để xếp hạng.</p>
+      </div>
+      <div class="kit-tabs" role="group" aria-label="Chọn kiểu hành trình" id="kitTabs"></div>
+      <p class="kit-blurb" id="kitBlurb"></p>
+      <div class="products" id="products"><p class="kit-blurb">Đang tải danh sách…</p></div>
+      <p class="preview-note" id="previewNote"></p>
+      <p class="src" id="updated"></p>
+    </div>
+  </section>
+
+  <section class="block market">
+    <div class="wrap">
+      <div class="head"><div><div class="eyebrow">Cách Homies chọn đồ</div><h2>Gợi ý thật, không xếp hạng trả tiền</h2></div></div>
+      <div class="rules-aff">
+        <div><strong>Theo hành trình</strong><p>Mỗi món gắn với một kiểu câu cụ thể, kèm điểm hợp và điểm chưa hợp.</p></div>
+        <div><strong>Giá cập nhật trên sàn</strong><p>Giá đổi hằng ngày nên Homies không ghi cứng. Bấm nút để xem giá hiện tại.</p></div>
+        <div><strong>Đồ cũ trước, đồ mới sau</strong><p>Người mới nên xem Chợ Homies trước. Câu vài chuyến rồi hẵng lên đồ.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="assets/logo-white.png" alt="Homies Fishing" width="150" height="136" loading="lazy">
+    <div class="cols">
+      <p>Một số liên kết sản phẩm là liên kết tiếp thị. Khi bạn mua qua đó, Homies có thể nhận hoa hồng từ người bán mà bạn không phải trả thêm.</p>
+      <p>Câu có trách nhiệm: thả cá nhỏ, giữ sạch bờ hồ, tôn trọng khu bảo tồn. Kích điện và chất nổ bị cấm theo Luật Thủy sản 2017.</p>
+      <p>Bản thiết kế mẫu. Hành trình, tin đăng và tên người dùng trên trang là dữ liệu minh họa.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Xem trước (file://, localhost, trang artifact): đi thẳng link đích vì không có hàm /go/
+  var h=location.hostname, preview=location.protocol==="file:"||/^(localhost|127\.|0\.0\.0\.0)/.test(h)||/claude/.test(h)||/claudeusercontent/.test(h);
+  var mb=document.getElementById("menuBtn"),mn=document.getElementById("menu");
+  mb.addEventListener("click",function(){var o=mn.classList.toggle("open");mb.setAttribute("aria-expanded",o);});
+  var tabs=document.getElementById("kitTabs"),blurb=document.getElementById("kitBlurb"),grid=document.getElementById("products");
+  function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML;}
+  fetch("data/affiliate-links.json").then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(data){
+    document.getElementById("updated").textContent="Danh sách cập nhật ngày "+data.updated.split("-").reverse().join("/")+".";
+    if(preview)document.getElementById("previewNote").textContent="Bản xem trước: nút mở thẳng trang tìm kiếm trên Shopee, chưa đi qua /go/ và chưa phải link affiliate.";
+    function show(id){
+      tabs.querySelectorAll("button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.kit===id?"true":"false");});
+      var k=data.kits.filter(function(x){return x.id===id;})[0];
+      blurb.innerHTML=esc(k.blurb)+' Đọc thêm: <a href="index.html#loai-ca">'+esc(k.guide)+'</a>.';
+      grid.innerHTML="";
+      data.links.filter(function(l){return l.kit===id;}).forEach(function(l){
+        var href=preview?l.target_url:"go/"+encodeURIComponent(l.slug)+"?a=do-cau-"+id+"&p=box";
+        var el=document.createElement("article");el.className="pbox";
+        el.innerHTML='<h3>'+esc(l.name)+'</h3><div class="fit">Hợp với: '+esc(l.fit)+'</div><ul>'+
+          l.pros.map(function(p){return '<li class="pro">'+esc(p)+'</li>';}).join("")+
+          l.cons.map(function(p){return '<li class="con">'+esc(p)+'</li>';}).join("")+
+          '</ul><div class="price">'+esc(l.price_note)+'</div><div class="acts"><a class="btn btn-boat" href="'+href+'" target="_blank" rel="sponsored nofollow noopener">Xem trên Shopee</a><a class="btn btn-line" href="index.html#cho">Tìm đồ cũ ở Chợ</a></div>';
+        grid.appendChild(el);
+      });
+    }
+    data.kits.forEach(function(k,i){var b=document.createElement("button");b.type="button";b.dataset.kit=k.id;b.textContent=k.name;b.addEventListener("click",function(){show(k.id);});tabs.appendChild(b);});
+    show(data.kits[0].id);
+  }).catch(function(){grid.innerHTML='<p class="kit-blurb">Chưa tải được danh sách. Tải lại trang hoặc mở qua máy chủ web (không mở trực tiếp bằng file).</p>';});
+})();
+</script>
+</body></html>
