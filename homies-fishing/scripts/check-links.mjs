@@ -3,7 +3,7 @@
 import { readFile } from "node:fs/promises";
 
 const file = new URL("../web/data/affiliate-links.json", import.meta.url);
-const { links } = JSON.parse(await readFile(file, "utf8"));
+const links = JSON.parse(await readFile(file, "utf8")).links.filter((l) => l.is_active !== false);
 
 const results = await Promise.all(
   links.map(async (l) => {

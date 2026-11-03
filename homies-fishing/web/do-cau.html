@@ -93,7 +93,7 @@
       var k=data.kits.filter(function(x){return x.id===id;})[0];
       blurb.innerHTML=esc(k.blurb)+' Đọc thêm: <a href="index.html#loai-ca">'+esc(k.guide)+'</a>.';
       grid.innerHTML="";
-      data.links.filter(function(l){return l.kit===id;}).forEach(function(l){
+      data.links.filter(function(l){return l.kit===id&&l.is_active!==false;}).forEach(function(l){
         var href=preview?l.target_url:"go/"+encodeURIComponent(l.slug)+"?a=do-cau-"+id+"&p=box";
         var el=document.createElement("article");el.className="pbox";
         el.innerHTML='<h3>'+esc(l.name)+'</h3><div class="fit">Hợp với: '+esc(l.fit)+'</div><ul>'+

@@ -1,6 +1,7 @@
 // Cloudflare Pages Function: /go/{slug}?a={bài}&p={vị trí}
 // Tra slug trong web/data/affiliate-links.json, ghi một lượt bấm (nếu có binding
 // Analytics Engine tên CLICKS) rồi chuyển hướng 302 tới link affiliate.
+// Link có "is_active": false được coi như đã gỡ: chuyển về trang Đồ nên mua.
 // Không lưu IP hay dữ liệu cá nhân.
 
 const SUB_ID_PARAM = {
@@ -15,7 +16,7 @@ export async function onRequestGet({ params, request, env }) {
   if (!res.ok) return Response.redirect(new URL("/do-cau.html", url), 302);
 
   const { links = [] } = await res.json();
-  const link = links.find((l) => l.slug === params.slug);
+  const link = links.find((l) => l.slug === params.slug && l.is_active !== false);
   if (!link) return Response.redirect(new URL("/do-cau.html", url), 302);
 
   const article = (url.searchParams.get("a") || "").slice(0, 64);
